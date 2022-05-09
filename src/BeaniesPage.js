@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import debounce from 'lodash.debounce';
 import './App.css';
 import { getBeanieBabies } from './services/fetch-utils';
 import BeaniesList from './BeaniesList';
@@ -8,6 +9,8 @@ function App() {
   const [page, setPage] = useState(1);
   const perPage = 80;
   const [lastPage, setLastPage] = useState(20);
+  const [filter, setFilter] = useState('');
+  const [filteredBeanies, setFilteredBeanies] = useState([]);
   
   useEffect(() => {
     async function fetch() {
@@ -32,6 +35,7 @@ function App() {
         {/* on click, this button should increment the page in state  */}
         <button onClick={() => setPage(page + 1)} disabled={page >= lastPage}>Next Page</button>
       </div>
+      <input value={filter} onChange={(e) => setFilter(e.target.value)}/>
       {/* pass the beanie babies into the BeaniesList component */}
       <BeaniesList beanieBabies={beanieBabies} />
     </>
