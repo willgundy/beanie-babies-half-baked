@@ -10,7 +10,7 @@ function App() {
   const perPage = 30;
   const [lastPage, setLastPage] = useState(20);
   const [filter, setFilter] = useState('');
-  const [filteredBeanies, setFilteredBeanies] = useState([]);
+  // const [filteredBeanies, setFilteredBeanies] = useState([]);
   const from = page * perPage - perPage;
   const to = page * perPage - 1;
   
@@ -24,6 +24,11 @@ function App() {
       setLastPage(beanies.lastPage);
     }
 
+    fetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]); // what can you do with this array to trigger a fetch every time the page changes?
+
+  useEffect(() => {
     async function getFilteredBeanies() {
       setPage(1);
       const filteredBeanies = await getBeanieBabies(from, to, perPage, filter);
@@ -32,14 +37,15 @@ function App() {
       setLastPage(filteredBeanies.lastPage);
     }
 
-    filter ? getFilteredBeanies() : fetch();
+    getFilteredBeanies();
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, filter]); // what can you do with this array to trigger a fetch every time the page changes?
+  }, [filter]);
 
 
   const updateFilter = (e) => setFilter(e.target.value);
 
-  const debouncedOnChange = debounce(updateFilter, 600);
+  const debouncedOnChange = debounce(updateFilter, 400);
 
   return (
     <>
