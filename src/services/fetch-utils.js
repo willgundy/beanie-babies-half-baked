@@ -1,12 +1,15 @@
 import { client, checkError } from './client';
 
-export async function getBeanieBabies(from = 0, to = 30) {
+export async function getBeanieBabies(from = 0, to = 30, perPage = 30, filter = '') {
   const response = await client
     .from('beanie_babies')
-    .select()
-    .range(from, to);
+    .select('*', { count: 'exact' })
+    .range(from, to)
+    .ilike('title', `%${filter}%`);
 
-  return checkError(response);
+  const lastPage = Math.ceil(response.count / (perPage));
+
+  return { ...response, lastPage };
 }
 
 export async function getSingleBeanie(id) {
